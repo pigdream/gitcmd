@@ -73,7 +73,17 @@ git commit -am ‘message’ -am等同于-a -m
 -m 参数表示可以直接输入后面的“message”，如果不加 -m参数，那么是不能直接输入message的，而是会调用一个编辑器一般是vim来让你输入这个message，
 -a参数可以将所有已跟踪文件中的执行修改或删除操作的文件都提交到本地仓库，即使它们没有经过git add添加到暂存区，
 注意: 新加的文件（即没有被git系统管理的文件）是不能被提交到本地仓库的。
+
+git commit --amend      补充提交或补充提交文件，不产生新的CommitID
 ```
+
+#### sgit revert
+
+<img src="https://imgconvert.csdnimg.cn/aHR0cDovL2ltZy5ibG9nLmNzZG4ubmV0LzIwMTgwNDE0MjA1ODE2MTg4" alt="这里写图片描述" style="zoom:50%;" />
+
+使用“git revert -n 版本号”反做，并使用“git commit -m 版本名”提交：注意：这里可能会出现冲突，那么需要手动修改冲突的文件。而且要git add 文件名。提交，使用“git commit -m 版本名”
+
+revert版本2，撤销版本2，生产了版本4，保留了版本3，不回像reset一样删除版本3
 
 #### git tag
 
@@ -85,7 +95,7 @@ git tag v0.2.1-light  							# 创建轻量标签  只有提交信息，无作�
 git tag -a v0.2.1 -m '0.2.1版本'  	 # 创建附注标签，详细标签，可以指定一个commit id,补打
 git show v0.2.1  										# 查看标签版本信息
 git tag -d v0.2.1  									# 删除标签
-git checkout [tagname]  						# 切换到标签进入detached branch，不能更改代码，要更改的话需要新建分支并指向新分支   git checkout -b newbranch 
+git checkout [tagname]  						# 切换到标签进入detached branch，不能更改代码，更改了也合不进去，要更改的话需要新建分支并指向新分支   git checkout -b newbranch 
 
 如果你想查看某个标签所指向的文件版本，可以使用 git checkout 命令， 虽然这会使你的仓库处于“分离头指针（detached HEAD）”的状态——这个状态有些不好的副作用：
 在“分离头指针”状态下，如果你做了某些更改然后提交它们，标签不会发生变化， 但你的新提交将不属于任何分支，并且将无法访问，除非通过确切的提交哈希才能访问。 因此，如果你需要进行更改，比如你要修复旧版本中的错误，那么通常需要创建一个新分支：
@@ -107,58 +117,52 @@ git branch -a								查看本地和远程所有分支
 git branch --merged
 git branch --no-merged
 
-git ls-remote
-
 git branch <name>                                创建分支
 git checkout <name>或者git switch <name>          切换分支
 git checkout -b <name>或者git switch -c <name>    创建+切换分支
+
 git checkout -B         												 强制创建
 
 git branch -d <name>														 删除分支
 git branch -D <name>                             要丢弃一个没有被合并过的分支，强行删除
 
 git branch (-c | -C) [<oldbranch>] <newbranch> // 拷贝分支
-git push origin <local_branch_name>:<remote_branch_name>    推送分支
-
 git branch --edit-description [<branchname>] //修改分支描述
-
-
-
 git branch (-m | -M) <oldbranch> <newbranch>     重命名分支 
+
+git push origin --delete               					 删除远程分支
+git push origin <local_branch_name>:<remote_branch_name>    推送分支
 git push origin :<remote_branch_name>						 删除远端分支，其实就是推送了一个空的分支到远端覆盖了原来的远端分支
-git push origin --delete hotfix
+
 git checkout -b <local_branch_name> origin/<remote_branch_name> 或
 git branch —track <local_branch_name> origin/<remote_branch_name>		创建并关联远程分支		
+
 git branch —set-upstream <local_branch_name> origin/<remote_branch_name>    本地已经存在的分支和远端分支建立对应关系
 git branch --unset-upstream [<branchname>] // 取消分支上流的设置
-如果远程新建了一个分支，本地没有该分支，可以利用** git checkout --track origin/branch_name** ，这时本地会新建一个分支名叫 branch_name ，会自动跟踪****远程的同名分支 branch_name。
+如果远程新建了一个分支，本地没有该分支，可以利用git checkout --track origin/branch_name，这时本地会新建一个分支名叫 branch_name ，会自动跟踪远程的同名分支 branch_name。
 
 git checkout -b new_branch_name branch_name
-git checkout --track origin/serverfix
 这条指令本来是根据一个 branch_name 分支分出一个本地分支 new_branch_name，但是如果所根据的分支 branch_name 是一个远程分支名，那么本地的分支会自动的 track 远程分支。建议跟踪分支和被跟踪远程分支同名
 
-一般我们就利用 git push --set-upstream origin branch_name 来在远程创建一个与本地branch_name 分支同名的分支并跟踪；利用 git checkout --track orgin/branch_name 来在本地创建一个与 branch_name 同名分支跟踪远程分支。
+git push --set-upstream origin branch_name 来在远程创建一个与本地branch_name 分支同名的分支并跟踪；
+git checkout --track orgin/branch_name 在本地创建一个与 branch_name 同名分支跟踪远程分支。
 
-git merge <name>                                 合并某分支到当前分支
-切换到子线,将变化变基到自己的主线上
-$ git checkout experiment
-$ git rebase bug001
-回到 bug001 ,进行一次快速合并
-
-$ git checkout bug001
-$ git merge experiment
+git merge <name>                       合并某分支到当前分支
 
 变基的主要作用是将合并操作的分支,整洁化到原始分支上面.看起来更清爽,但是隐藏了怎么合并的过程.需要查看日志来看看真实的记录.
 不要对在你的仓库外有副本的分支执行变基。 也就是说,不要变基公用的(release,develop等)分支,只用来整理自己的提交记录.
 如果你已经将提交推送至某个仓库，而其他人也已经从该仓库拉取提交并进行了后续工作，此时，如果你用 git rebase 命令重新整理了提交并再次推送，你的同伴因此将不得不再次将他们手头的工作与你的提交进行整合，如果接下来你还要拉取并整合他们修改过的提交，事情就会变得一团糟。
 
-
+切换到子线,将变化变基到自己的主线上
+$ git checkout experiment
+$ git rebase bug001
+回到 bug001 ,进行一次快速合并
+$ git checkout bug001
+$ git merge experiment
 
 git  clone 只获取主分支
 从上面命令执行后的结果来看，当前本地仓库中只有 master 分支，其他的分支都是在远程仓库上，这时可以用 git checkout branch_name 命令来下载远程分支：
 看到这里可能会疑惑了，git checkout branch_name 不是切换分支的命令吗？实际上当 branch_name 分支在本地不存在而远程仓库存在时，这个命令与 git checkout -b <branch> --track <remote>/<branch> 含义相同，会在本地新建一个分支，并与远程分支建立联系。
-
-
 ````
 
 #### git log
@@ -171,89 +175,50 @@ git log —stat 显示文件修改差异，没显示具体修改
 git log —graph 树形状提交记录，可查看分支合并信息
 git log --oneline --decorate
 git log --oneline --decorate --graph --all
+git log --pretty=oneline         只显示版本号与备注
+
+git reflog        可以查询所有分支的所有操作记录，包括git reset --hard后被删除的版本号
 ```
-
-
-
-#### git status
-
-
 
 #### git diff
 
-- 尚未缓存的改动：**git diff**
+（1）git diff：当工作区有改动，临时区为空，diff的对比是“工作区与最后一次commit提交的仓库的共同文件”；当工作区有改动，临时区不为空，diff对比的是“工作区与暂存区的共同文件”。
 
-- 查看已缓存的改动： **git diff --cached**
+（2）git diff --cached 或 git diff --staged：显示暂存区(已add但未commit文件)和最后一次commit(HEAD)之间的所有不相同文件的增删改(git diff --cached和git diff –staged相同作用)
 
-- 查看已缓存的与未缓存的所有改动：**git diff HEAD**
+（3）git diff HEAD：显示工作目录(已track但未add文件)和暂存区(已add但未commit文件)与最后一次commit之间的的所有不相同文件的增删改。
 
-- 显示摘要而非整个 diff：**git diff --stat**
+​			（3.1）git diff HEAD~X或git diff HEAD^^^…(后面有X个^符号，X为正整数):可以查看最近一次提交的版本与往过去时间线前数X个的版本之间的所有同(3)中定义文件之间的增删改。
 
-- 显示暂存区和上一次提交(commit)的差异:
+（4）git diff <分支名1> <分支名2> ：比较两个分支上最后 commit 的内容的差别
 
-  ```
-  $ git diff --cached [file]
-  或
-  $ git diff --staged [file]
-  ```
-  
-  1.git diff用来比较文件之间的不同，其基本用法如下：
-  （1）git diff：当工作区有改动，临时区为空，diff的对比是“工作区与最后一次commit提交的仓库的共同文件”；当工作区有改动，临时区不为空，diff对比的是“工作区与暂存区的共同文件”。
-  
-  （2）git diff --cached 或 git diff --staged：显示暂存区(已add但未commit文件)和最后一次commit(HEAD)之间的所有不相同文件的增删改(git diff --cached和git diff –staged相同作用)
-  
-  （3）git diff HEAD：显示工作目录(已track但未add文件)和暂存区(已add但未commit文件)与最后一次commit之间的的所有不相同文件的增删改。
-  
-  （3.1）git diff HEAD~X或git diff HEAD^^^…(后面有X个^符号，X为正整数):可以查看最近一次提交的版本与往过去时间线前数X个的版本之间的所有同(3)中定义文件之间的增删改。
-  
-  （4）git diff <分支名1> <分支名2> ：比较两个分支上最后 commit 的内容的差别
-  
-  (4.1)  git diff branch1 branch2 --stat    显示出所有有差异的文件(不详细,没有对比内容)
-  
-  (4.2)  git diff branch1 branch2              显示出所有有差异的文件的详细差异(更详细)
-  
-  (4.3)  git diff branch1 branch2 具体文件路径 显示指定文件的详细差异(对比内容)
-  
-  我们有2个分支：master、dev(dev为develop的缩写,应是开发新功能的Feature分支)，查看这两个 branch 的区别，除了上面(abc)还有以下几种方式：
-  
-  (4.4) git log dev ^master 查看 dev中log有的commit，而 master中log没有的commit
-  
-  
-  
-  (4.5) git log master..dev查看 dev 中的log比 master 中的log多提交了哪些内容(注意，列出来的是两个点“..”后边（此处即dev）多提交的内容)
-  
-  
-  
-  (4.6) git log dev...master 不知道谁提交的多谁提交的少，单纯想知道有什么不一样
-  
-  
-  
-  (4.7) git log --left-right dev...master 在上述情况下，再显示出每个提交是在哪个分支上
-  
-  
-  
-  注意 commit 后面的箭头，根据我们在 –left-right dev…master 的顺序，左箭头 < 表示是 dev 的，右箭头 > 表示是 master的，截图中表示这三个提交都是在 master 分支上的
-  
-  ————————————————
-  版权声明：本文为CSDN博主「快乐李同学(李俊德-大连理工大学)」的原创文章，遵循CC 4.0 BY-SA版权协议，转载请附上原文出处链接及本声明。
-  原文链接：https://blog.csdn.net/wq6ylg08/article/details/88798254
-  
-  git diff: 当工作区有改动，临时区为空，diff的对比是“工作区与最后一次commit提交的仓库的共同文件”；当工作区有改动，临时区不为空，diff对比的是“工作区与暂存区的共同文件”。
-  git diff --cached 或 git diff --staged：显示暂存区(已add但未commit文件)和最后一次commit(HEAD)之间的所有不相同文件的增删改
-  git diff HEAD：显示工作目录(已track但未add文件)和暂存区(已add但未commit文件)与最后一次commit之间的的所有不相同文件的增删改
-  ————————————————
-  版权声明：本文为CSDN博主「快乐李同学(李俊德-大连理工大学)」的原创文章，遵循CC 4.0 BY-SA版权协议，转载请附上原文出处链接及本声明。
-  原文链接：https://blog.csdn.net/wq6ylg08/article/details/88798860
+​		(4.1)  git diff branch1 branch2 --stat    显示出所有有差异的文件(不详细,没有对比内容)
+
+​		(4.2)  git diff branch1 branch2              显示出所有有差异的文件的详细差异(更详细)
+
+​		(4.3)  git diff branch1 branch2 具体文件路径 显示指定文件的详细差异(对比内容)
+
+我们有2个分支：master、dev(dev为develop的缩写,应是开发新功能的Feature分支)，查看这两个 branch 的区别，除了上面(abc)还有以下几种方式：
+
+​		(4.4) git log dev ^master 查看 dev中log有的commit，而 master中log没有的commit
+
+​		(4.5) git log master..dev查看 dev 中的log比 master 中的log多提交了哪些内容(注意，列出来的是两个点“..”后边（此处即dev）多提交的内容)
+
+​		(4.6) git log dev...master 不知道谁提交的多谁提交的少，单纯想知道有什么不一样
+
+​		(4.7) git log --left-right dev...master 在上述情况下，再显示出每个提交是在哪个分支上
+
+注意 commit 后面的箭头，根据我们在 –left-right dev…master 的顺序，左箭头 < 表示是 dev 的，右箭头 > 表示是 master的，截图中表示这三个提交都是在 master 分支上的
+
+#### git checkout 
+
+从缓存区，commit区，远程检出文件，分支等，checkout  检出
 
 
 
 
 
 
-
-
-
-#### git checkout --
 
 
 
@@ -281,8 +246,8 @@ git checkout -b template origin/template   // 作用是checkout远程仓库origi
 ```
 git remote -v
 git remote add   <name>  link
-git remote remove
-git remote set-url origin git@192.168.6.70:res_dev_group/test.git 
+git remote remove            删除远程仓库的关联
+git remote set-url origin git@192.168.6.70:res_dev_group/test.git  更改远程连接
 
 ```
 
@@ -304,12 +269,18 @@ git pull  --all								 所有分支
 git push REMOTE '*:*'          推送所有分支
 git push REMOTE --all					 推送所有分支
 git push --all origin					 推送所有分支
+
+git push origin local_branch_name：remote_branch_name
 git push origin master         如果该远程分支不存在，则会被新建
 git push -u origin master      加了参数-u后，以后即可直接用git push 代替git push origin master
 其实这是一个简写，-u 可以写成 --set-upstream 表示设置上游分支，其实就是和远程仓库的分支建立联系。
+
 branch_name 也是 local_branch_name:remote_branch_name的一种简写，冒号前表示本地分支，冒号后面表示远程分支，如果只写一个就表示两个分支名相同，远程仓库中如果没有这个分支就会新建一个。
-git push origin ：refs/for/master    如果省略本地分支名，则表示删除指定的远程分支，等同于 git push origin –delete master
+
+git push origin ：refs/for/master    如果省略本地分支名，则表示删除指定的远程分支，等同于 git push origin --delete master
+
 git push origin    如果当前分支与远程分支存在追踪关系，则本地分支和远程分支都可以省略，将当前分支推送到origin主机的对应分支
+
 git push           如果当前分支只有一个远程分支，那么主机名都可以省略，形如 git push，可以使用git branch -r ，查看远程的分支名
 
 
@@ -317,6 +288,8 @@ git push origin v0.1.2  # 将v0.1.2标签提交到git服务器
 git push origin --tags  # 将本地所有标签一次性提交到git服务器
 git push origin :refs/tags/<tagname>    #可以删除一个远程标签。
 git push origin --delete <tagname>			#可以删除一个远程标签。
+
+“git push -f”           强制推上去，即使提交的版本号比远端的旧
 ```
 
 在git push后出现错误可能是因为其他人提交了代码，而使你的本地代码库版本不是最新。这时你需要先git pull代码后，检查是否有文件冲突。没有文件冲突的话需要重新走一遍代码提交流程add —> commit —> push。
@@ -333,9 +306,31 @@ git push origin --delete <tagname>			#可以删除一个远程标签。
 强制远端覆盖本地
 
 `git fetch --all`
-`git reset --hard origin/<remote_branch_name>`		提交日志查看方式
+`git reset --hard origin/<remote_branch_name>`		
 
 ++++++++++++++
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 ## level 2
 
@@ -388,11 +383,6 @@ git revert <merge_commit_id> -m number // 撤销某一次merge
 
 - HEAD^^^ 上上上一个版本
 
-  
-
-- 以此类推...
-
-  
 
 可以使用 ～数字表示
 
