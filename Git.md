@@ -12,6 +12,58 @@
 
 **版本库：**工作区有一个隐藏目录 **.git**，这个不算工作区，而是 Git 的版本库。
 
+
+
+在使用git命令的时候，后面可能会带有参数，有些参数前面是单横杠有些是双横杠。
+
+**一.单横杠短选项命令（UNIX风格）：**
+
+（1）一个短选项命令，由横杠（-）紧跟单个短选项字符。
+
+（2）多个短选项命令，由横杠（-）紧跟每个短选项字符。
+
+（3）命令和参数之间用空格分隔。
+
+（4）仅作为连字符。
+
+```
+$ git commit -m "蚂蚁部落第一次提交"
+```
+
+单横杠后面是一个字符m，与参数"蚂蚁部落第一次提交"用空格分隔。
+
+```
+$ rm -rf ant
+```
+
+上面代码是由2个短选项构成。
+
+```
+$ git show --name-only
+```
+
+上面的单个横杠（-）仅作为连字符使用。
+
+**二.双横杠长选项命令（GNU风格）：**
+
+（1）长选项命令，有两个（--）紧跟长选项单词（单词不能简写）。
+
+（2）长选项后面跟参数，用空格或等号分隔。
+
+```
+$ git log --pretty=oneline
+```
+
+特别说明：双横杠（--）后面不一定都是参数，也许是路径，如果是路径则需要用空格分隔：
+
+```
+$ git checkout -- readme.txt
+```
+
+
+
+
+
 ++++++++++++
 
 ## level 1
@@ -77,7 +129,7 @@ git commit -am ‘message’ -am等同于-a -m
 git commit --amend      补充提交或补充提交文件，不产生新的CommitID
 ```
 
-#### sgit revert
+#### git revert
 
 <img src="https://imgconvert.csdnimg.cn/aHR0cDovL2ltZy5ibG9nLmNzZG4ubmV0LzIwMTgwNDE0MjA1ODE2MTg4" alt="这里写图片描述" style="zoom:50%;" />
 
@@ -164,6 +216,26 @@ git  clone 只获取主分支
 从上面命令执行后的结果来看，当前本地仓库中只有 master 分支，其他的分支都是在远程仓库上，这时可以用 git checkout branch_name 命令来下载远程分支：
 看到这里可能会疑惑了，git checkout branch_name 不是切换分支的命令吗？实际上当 branch_name 分支在本地不存在而远程仓库存在时，这个命令与 git checkout -b <branch> --track <remote>/<branch> 含义相同，会在本地新建一个分支，并与远程分支建立联系。
 ````
+
+
+
+#### git stash
+
+`stash`命令可用于临时保存和回复修改，**可跨分支**。
+
+> ***注：在未`add`之前才能执行`stash`！！！！\***
+
+- `git stash [save message]`
+   保存，`save`为可选项，`message`为本次保存的注释
+- `git stash list`所有保存的记录列表
+- `git stash pop stash@{num}`
+   恢复，`num`是可选项，通过`git stash list`可查看具体值。**只能恢复一次**
+- `git stash apply stash@{num}`
+   恢复，`num`是可选项，通过`git stash list`可查看具体值。**可回复多次**
+- `git stash drop stash@{num}`
+   删除某个保存，`num`是可选项，通过`git stash list`可查看具体值
+- `git stash clear`
+   删除所有保存
 
 #### git log
 
