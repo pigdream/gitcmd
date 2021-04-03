@@ -325,6 +325,15 @@ git remote set-url origin git@192.168.6.70:res_dev_group/test.git  更改远程�
 
 
 
+
+
+
+
+如果你是git pull或者git push报fatal: refusing to merge unrelated histories
+同理：
+git pull origin master --allow-unrelated-histories / git pull --allow-unrelated-histories
+等等，就是这样完美的解决！
+
 #### git pull
 
 **git pull** 其实就是 **git fetch** 和 **git merge FETCH_HEAD** 的简写。 命令格式如下：
